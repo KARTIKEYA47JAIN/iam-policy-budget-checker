@@ -1,0 +1,374 @@
+# IAM Policy Budget Checker
+
+> **Stop IAM policy size errors from breaking your Terraform deploys.**  
+> Check your AWS IAM policies are within size limits - before `terraform apply` ever runs.
+
+![VSCode](https://img.shields.io/badge/VSCode-1.75+-blue?logo=visualstudiocode)
+![AWS](https://img.shields.io/badge/AWS-IAM-orange?logo=amazonaws)
+![Terraform](https://img.shields.io/badge/Terraform-.tftpl-purple?logo=terraform)
+
+---
+
+## The Problem This Solves
+
+You write an IAM policy in Terraform. `terraform plan` looks fine. You run `terraform apply` and halfway through it fails:
+
+```
+Error: LimitExceeded: Policy document exceeds the maximum allowed size
+```
+
+Now you are doing an emergency rollback.
+
+The frustrating part - AWS only checks the size limit at **apply time**, not at plan time. And if your policies use Terraform's `templatefile()` function with `${variable}` placeholders, you cannot even measure the real size just by looking at the file - the variables are shorter than the real values they become.
+
+**This extension fixes that.** It substitutes your variables with realistic values, minifies the JSON exactly the way AWS does, and tells you how close you are to the limits - right inside VSCode, before you deploy anything.
+
+---
+
+## AWS IAM Size Limits (What This Checks)
+
+| Policy Type | Terraform Resource | Size Limit |
+|-------------|-------------------|------------|
+| **Managed** | `aws_iam_policy` | **6,144 characters** |
+| **Inline** | `aws_iam_role_policy` | **10,240 characters** |
+
+These limits apply to the **minified JSON** - the version with all spaces and newlines removed. That is what AWS counts, and that is what this extension measures.
+
+---
+
+## Quick Start (2 minutes)
+
+### Step 1 - Install
+
+**Option A: From VSIX file**
+1. Download `iam-policy-budget-checker-1.0.0.vsix` from the [Releases page](https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker/releases)
+2. Open VSCode
+3. Press `Ctrl+Shift+P` → type `Extensions: Install from VSIX`
+4. Select the downloaded file
+5. Restart VSCode
+
+**Option B: Terminal**  
+```bash
+code --install-extension iam-policy-budget-checker-1.0.0.vsix
+```
+
+### Step 2 - Open your Terraform policy folder
+
+Open the folder containing your `.tftpl` policy files in VSCode.
+
+### Step 3 - Run a check
+
+Right-click any `.tftpl` file in the Explorer sidebar:
+
+```
+Right-click → Check IAM Policy Budget
+```
+
+That's it. A report panel opens showing you exactly where you stand.
+
+---
+
+## What You Will See
+
+When you run a check, a report panel opens on the right side of your editor:
+
+```
+🛡️ IAM Policy Budget Report
+Checked at 14:32:05 · 3 files analyzed          ✅ 3/3 within managed limit
+
+┌─────────────────────────────────────────────────────┐
+│ s3_access_policy.tftpl                              │ 
+│                                                     │
+│ Rendered size:    3,711 chars                       │
+│                                                     │
+│ MANAGED  6,144   ████████████░░░░░░░░  60.4%        │
+│ INLINE  10,240   ███████░░░░░░░░░░░░░  36.2%        │
+│                                                     │
+│ WITHIN MANAGED LIMIT  (+2,433 chars remaining)      |
+│                                                     │
+│ Statement breakdown (17 statements)          ▼      │
+└─────────────────────────────────────────────────────┘
+```
+
+### Status colours
+
+| Colour | Meaning | What to do |
+|--------|---------|------------|
+| 🟢 **Green** | Under 6,144 chars | Safe to deploy as `aws_iam_policy` |
+| 🟡 **Yellow** | 6,144–10,240 chars | Switch to `aws_iam_role_policy` (inline) |
+| 🔴 **Red** | Over 10,240 chars | Split into multiple policies |
+| ⚪ **Gray** | File has an error | Check the error message shown |
+
+---
+
+## Variable Substitution - How It Works
+
+Your `.tftpl` files look like this:
+
+```json
+{
+  "Resource": "arn:aws:s3:::${state_bucket_name}/*"
+}
+```
+
+The variable `${state_bucket_name}` is only 19 characters. But your real bucket name might be `my-company-terraform-state-prod-eu-central-1` - 44 characters. That difference adds up across hundreds of statements and gives you a false sense of safety.
+
+**The extension asks you for a realistic value the first time it sees each variable:**
+
+```
+Variable substitution required
+Enter a dummy value for ${state_bucket_name}
+> my-company-terraform-state-prod-eu-central-1    [Enter]
+
+Save this value?
+> ✓ Save to settings   (remember forever)
+  ✗ Just this session  (forget when VSCode closes)
+```
+
+Once saved, you are never asked again for that variable.
+
+### Pre-configure your variables (recommended)
+
+Save all your variable values in VSCode settings so you are never prompted at all.
+
+Open your workspace settings (`Ctrl+Shift+P` → `Open Workspace Settings (JSON)`) and add:
+
+```json
+{
+  "iamPolicyChecker.variableSubstitutions": {
+    "region": "eu-central-1",
+    "aws_account_id": "123456789012",
+    "environment": "production",
+    "state_bucket_name": "my-company-terraform-state-prod-eu-central-1",
+    "project_name": "my-actual-project-name"
+  }
+}
+```
+
+---
+
+## All the Ways to Run a Check
+
+### Right-click in Explorer (most common)
+
+| What you right-click | What happens |
+|---------------------|-------------|
+| A single `.tftpl` file | Checks that one file |
+| A folder | Checks all `.tftpl` files inside it |
+
+### Command Palette (`Ctrl+Shift+P`)
+
+| Command | What it does |
+|---------|-------------|
+| `IAM Policy: Check Budget` | Checks the file currently open in the editor |
+| `IAM Policy: Check All in Workspace` | Scans your entire workspace |
+| `IAM Policy: Open Settings` | Opens the extension settings |
+| `IAM Policy: Clear Session Variables` | Forgets all variable values entered this session |
+
+### Auto-check on save (optional)
+
+Enable this setting to automatically re-check every time you save a `.tftpl` file:
+
+```json
+{
+  "iamPolicyChecker.autoCheckOnSave": true
+}
+```
+
+### CodeLens (inline editor hint)
+
+When you open a `.tftpl` file that has been checked, a summary line appears above line 1:
+
+```
+✅ Managed: 3,711 / 6,144 (60.4%)   Inline: 3,711 / 10,240 (36.2%)
+```
+
+---
+
+## All Settings
+
+| Setting | Default | Description |
+|---------|---------|-------------|
+| `iamPolicyChecker.variableSubstitutions` | `{}` | Your variable values - set these to avoid being prompted |
+| `iamPolicyChecker.managedPolicyLimit` | `6144` | AWS managed policy limit. Only change if AWS updates this |
+| `iamPolicyChecker.inlinePolicyLimit` | `10240` | AWS inline policy limit. Only change if AWS updates this |
+| `iamPolicyChecker.autoCheckOnSave` | `false` | Re-check automatically when you save |
+| `iamPolicyChecker.warnThresholdPercent` | `90` | Show a warning in the Problems panel when over this % |
+| `iamPolicyChecker.rememberSessionVariables` | `true` | Remember values you type in during the current session |
+
+---
+
+## Frequently Asked Questions
+
+**Q: My file has no `${variables}` - will it still work?**  
+Yes. If there are no variables, the extension skips the substitution step and measures the file directly.
+
+**Q: I pressed Escape on the variable prompt. What happens?**  
+That file is skipped and shown as "Skipped - user cancelled" in the report. All other files in the same run are still checked.
+
+**Q: The size shown seems wrong.**  
+The most common reason is that your variable values in settings are shorter than the real values used in deployment. Open Settings and make sure `iamPolicyChecker.variableSubstitutions` contains values that match your real environment as closely as possible.
+
+**Q: What does the Statement breakdown show?**  
+Each IAM statement's individual size contribution, sorted largest first. This tells you exactly which statements to trim or split if you are over the limit.
+
+**Q: Can I use this without Terraform?**  
+Yes - any JSON file saved with a `.tftpl` extension will be analysed. The variable substitution step is simply skipped if there are no `${...}` patterns.
+
+---
+
+---
+
+## For Developers
+
+> This section explains how the extension is built internally. You do not need to read this to use the extension.
+
+### Building from Source
+
+```bash
+git clone https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker
+cd iam-policy-budget-checker
+npm install
+npm run compile
+```
+
+Press `F5` in VSCode to launch the Extension Development Host with the extension loaded.
+
+To package as a `.vsix`:
+```bash
+npm install -g @vscode/vsce
+vsce package --no-dependencies
+```
+
+### Project Structure
+
+```
+src/
+├── extension.ts          Entry point. Registers all commands and listeners.
+├── analyzer.ts           Core logic. Reads files, resolves variables, measures size.
+├── variableResolver.ts   Handles ${variable} extraction, prompts, and caching.
+├── resultsPanel.ts       Builds the Webview HTML report panel.
+├── codeLensProvider.ts   Shows inline size summary above line 1 of .tftpl files.
+├── diagnosticsProvider.ts Writes to the VSCode Problems panel.
+└── types.ts              Shared TypeScript interfaces.
+```
+
+### How It All Works - Architecture Diagram
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                         package.json                            │
+│   Declares commands, menus, settings, activation events         │
+│   VSCode reads this at install time - no code runs yet          │
+└───────────────────────────────┬─────────────────────────────────┘
+                                │ workspace contains *.tftpl
+                                ▼
+┌──────────────────────────────────────────────────────────────────┐
+│                        extension.ts                              │
+│   activate() runs once. Creates all providers and registers      │
+│   commands. Pushes everything into context.subscriptions         │
+│   for automatic cleanup.                                         │
+└──────┬──────────────────────────────────┬────────────────────────┘
+       │ user triggers command            │ file saved (autoCheck)
+       ▼                                  ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                    runCheckOnFiles()                            │
+│   Loops through selected files. Calls analyzer.analyzeFile()    │
+│   for each one. Collects all results.                           │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │
+                               ▼
+┌─────────────────────────────────────────────────────────────────┐
+│                       analyzer.ts                               │
+│                                                                 │
+│  1. Read file from disk (fs.readFileSync)                       │
+│  2. Check for empty file / malformed ${                         │
+│  3. Extract all ${variable} names via regex                     │
+│  4. Pass to variableResolver → get substitution Map             │
+│  5. Apply substitutions (replace every ${var} with value)       │
+│  6. JSON.parse() → catch errors with line/col position          │
+│  7. JSON.stringify() ← this IS the minification                 │
+│     .length = what AWS counts                                   │
+│  8. Compare against limits → status: ok/warn/over_inline        │
+│  9. Per-statement size breakdown, sorted largest first          │
+│ 10. Store result in cache with file mtime                       │
+└──────────────────────────────┬──────────────────────────────────┘
+                               │ PolicyAnalysisResult
+              ┌────────────────┼─────────────────┐
+              ▼                ▼                 ▼
+┌─────────────────┐  ┌──────────────────┐  ┌───────────────────┐
+│diagnostics      │  │ resultsPanel.ts  │  │codeLensProvider   │
+│Provider.ts      │  │                  │  │.ts                │
+│                 │  │ Builds HTML      │  │                   │
+│ Writes to       │  │ string for the   │  │ Reads result      │
+│ Problems panel  │  │ Webview panel.   │  │ cache. Redraws    │
+│ (Ctrl+Shift+M)  │  │ Opens or reuses  │  │ the size line     │
+│                 │  │ the panel.       │  │ above line 1 of   │
+│ Red squiggles   │  │                  │  │ the open file.    │
+│ on error lines  │  │ Messages back    │  │                   │
+└─────────────────┘  │ via postMessage  │  └───────────────────┘
+                     │ (open file,      │
+                     │  open settings)  │
+                     └──────────────────┘
+```
+
+### Variable Resolution - Decision Flow
+
+```
+For each ${variable} found in the file:
+│
+├── Is it in iamPolicyChecker.variableSubstitutions settings?
+│   YES → use that value, move to next variable
+│   NO  ↓
+│
+├── Is it in the session cache (already entered this run)?
+│   YES → use cached value, move to next variable
+│   NO  ↓
+│
+├── Show showInputBox() prompt to user
+│   ESCAPE → return null → skip entire file
+│   ENTER  ↓
+│
+├── Store in session cache (if rememberSessionVariables: true)
+│
+└── Show QuickPick: "Save to settings?" 
+    YES → write to workspace settings.json permanently
+    NO  → value lives only for this session
+```
+
+### Why `JSON.stringify()` is the Minification
+
+AWS measures IAM policy size against the minified JSON - all whitespace removed. `JSON.parse()` followed by `JSON.stringify()` with no extra arguments does exactly this:
+
+```typescript
+const minified = JSON.stringify(JSON.parse(rendered));
+// minified.length === what AWS counts
+```
+
+This is the most important line in the entire extension.
+
+### Cache Invalidation
+
+Results are cached per file path alongside the file's `mtimeMs` (modification timestamp). Before returning a cached result, the current `mtime` is checked:
+
+```typescript
+const stat = fs.statSync(uri.fsPath);
+if (stat.mtimeMs !== entry.mtimeMs) {
+    // File changed since last check - discard cache
+    this.resultCache.delete(uri.fsPath);
+}
+```
+
+This means editing a file and re-running the check always produces a fresh result.
+
+### Tech Stack
+
+- **Language:** TypeScript
+- **Runtime:** VSCode Extension Host (Node.js)
+- **UI:** VSCode Webview API (HTML/CSS/JS panel) + CodeLens API
+- **Dependencies:** VSCode API and Node.js built-ins only - zero npm runtime dependencies
+
+---
+
+*Built by a DevOps engineer to solve a real deployment problem.*  
+*AI-assisted implementation. Problem definition, specification, and testing by the author.*

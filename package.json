@@ -1,0 +1,132 @@
+{
+  "name": "iam-policy-budget-checker",
+  "displayName": "IAM Policy Budget Checker",
+  "description": "Analyzes AWS IAM policy .tftpl files to check character limits before terraform apply",
+  "version": "1.0.0",
+  "publisher": "devops-tools",
+  "engines": {
+    "vscode": "^1.75.0"
+  },
+  "categories": [
+    "Linters"
+  ],
+  "activationEvents": [
+    "onLanguage:json",
+    "workspaceContains:**/*.tftpl"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "iam-policy-checker.checkFile",
+        "title": "Check IAM Policy Budget",
+        "category": "IAM Policy"
+      },
+      {
+        "command": "iam-policy-checker.checkFolder",
+        "title": "Check All IAM Policies in Folder",
+        "category": "IAM Policy"
+      },
+      {
+        "command": "iam-policy-checker.checkWorkspace",
+        "title": "IAM Policy: Check All in Workspace",
+        "category": "IAM Policy"
+      },
+      {
+        "command": "iam-policy-checker.checkCurrentFile",
+        "title": "IAM Policy: Check Budget",
+        "category": "IAM Policy"
+      },
+      {
+        "command": "iam-policy-checker.openSettings",
+        "title": "IAM Policy: Open Settings",
+        "category": "IAM Policy"
+      },
+      {
+        "command": "iam-policy-checker.clearSessionVariables",
+        "title": "IAM Policy: Clear Session Variables",
+        "category": "IAM Policy"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "iam-policy-checker.checkFile",
+          "when": "resourceExtname == .tftpl",
+          "group": "navigation"
+        },
+        {
+          "command": "iam-policy-checker.checkFolder",
+          "when": "explorerResourceIsFolder",
+          "group": "navigation"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "IAM Policy Budget Checker",
+      "properties": {
+        "iamPolicyChecker.variableSubstitutions": {
+          "type": "object",
+          "default": {},
+          "description": "User-defined variable substitution map for .tftpl template rendering. Keys are variable names without the ${} wrapper. Values are dummy strings used only for size estimation.",
+          "additionalProperties": {
+            "type": "string"
+          },
+          "examples": [
+            {
+              "region": "eu-central-1",
+              "environment": "nonprod"
+            }
+          ]
+        },
+        "iamPolicyChecker.managedPolicyLimit": {
+          "type": "number",
+          "default": 6144,
+          "description": "AWS managed policy character limit (aws_iam_policy)"
+        },
+        "iamPolicyChecker.inlinePolicyLimit": {
+          "type": "number",
+          "default": 10240,
+          "description": "AWS inline policy character limit (aws_iam_role_policy)"
+        },
+        "iamPolicyChecker.autoCheckOnSave": {
+          "type": "boolean",
+          "default": false,
+          "description": "Automatically re-check .tftpl files on save"
+        },
+        "iamPolicyChecker.warnThresholdPercent": {
+          "type": "number",
+          "default": 90,
+          "description": "Show yellow warning when usage exceeds this percentage of the managed limit. Does not affect red/green status."
+        },
+        "iamPolicyChecker.rememberSessionVariables": {
+          "type": "boolean",
+          "default": true,
+          "description": "Remember variable values entered during a session without persisting to settings"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "test": "mocha --require ts-node/register --require tsconfig-paths/register --recursive --extension ts src/tests --ui tdd --color"
+  },
+  "devDependencies": {
+    "@types/mocha": "^10.0.0",
+    "@types/node": "^18.0.0",
+    "@types/vscode": "^1.75.0",
+    "@vscode/vsce": "^3.9.1",
+    "mocha": "^10.0.0",
+    "module-alias": "^2.3.4",
+    "ts-node": "^10.0.0",
+    "tsconfig-paths": "^4.2.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+  "type": "git",
+  "url": "https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker"
+  },
+  "homepage": "https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker#readme"
+}

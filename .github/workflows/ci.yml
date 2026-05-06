@@ -1,0 +1,56 @@
+name: CI
+
+# Runs on every push to any branch and every pull request targeting main
+# This ensures code is always tested before it can be merged
+
+on:
+  push:
+    branches: ['**']
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    name: Build and Test
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [18.x, 20.x]
+        # Tests run on both Node 18 and 20 to catch version-specific issues
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          # cache: 'npm' speeds up subsequent runs by caching node_modules
+
+      - name: Install dependencies
+        run: npm ci
+        # npm ci is stricter than npm install — it uses package-lock.json exactly
+        # and fails if there are any discrepancies. Better for CI than npm install.
+
+      - name: Compile TypeScript
+        run: npm run compile
+        # Fails the pipeline if any TypeScript errors exist
+
+      - name: Run tests
+        run: npm test
+        # Runs all 47 unit tests — fails pipeline if any test fails
+      
+      - name: Package VSIX (verify it can be built)
+        if: matrix.node-version == '20.x'
+        run: npx @vscode/vsce package --no-dependencies --allow-missing-repository
+
+      - name: Upload VSIX as build artifact
+        if: matrix.node-version == '20.x'
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsix-node-${{ matrix.node-version }}
+          path: '*.vsix'
+          retention-days: 7
