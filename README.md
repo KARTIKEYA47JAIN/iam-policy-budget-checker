@@ -1,5 +1,18 @@
 # IAM Policy Budget Checker
 
+### Author's Note
+*To be honest, if you ask me to explain the `.ts` files line by line, I genuinely cannot. 😅*
+
+*But here's what I can tell you: I had a real problem. I kept hitting AWS IAM policy size limits mid-deploy and wanted a tool that would catch it before `terraform apply` - without asking AI to count characters for me every single time.*
+
+**(At the very least, I didn't want to see that `LimitExceeded` message for something this preventable.)**
+
+*I'm a DevOps engineer. TypeScript is nowhere on my learning list right now 🥲. I'm already a jack of many trades and honestly proud of it. But I knew exactly what I wanted to build and why - and that turned out to be enough.*
+
+*P.S. Yes, I used AI to write the code. I had the idea and the problem - AI had the TypeScript. Fair trade. So yups, the irony of "not depending on the world" while depending on AI is not lost on me. 🤣*
+
+---
+
 > **Stop IAM policy size errors from breaking your Terraform deploys.**  
 > Check your AWS IAM policies are within size limits - before `terraform apply` ever runs.
 
@@ -214,8 +227,6 @@ Each IAM statement's individual size contribution, sorted largest first. This te
 
 **Q: Can I use this without Terraform?**  
 Yes - any JSON file saved with a `.tftpl` extension will be analysed. The variable substitution step is simply skipped if there are no `${...}` patterns.
-
----
 
 ---
 
