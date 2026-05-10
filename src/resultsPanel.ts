@@ -30,7 +30,7 @@ export class ResultsPanelProvider {
             if (msg.command === 'openFile') {
                 vscode.commands.executeCommand('vscode.open', vscode.Uri.file(msg.filePath));
             } else if (msg.command === 'openSettings') {
-                vscode.commands.executeCommand('workbench.action.openSettings', 'iamPolicyChecker');
+                vscode.commands.executeCommand('workbench.action.openSettings', 'terraformPolicyIamChecker');
             }
         });
     }

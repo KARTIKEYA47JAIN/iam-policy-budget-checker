@@ -55,7 +55,7 @@ export class PolicyAnalyzer {
     }
 
     async analyzeFile(uri: vscode.Uri): Promise<PolicyAnalysisResult> {
-        const config = vscode.workspace.getConfiguration('iamPolicyChecker');
+        const config = vscode.workspace.getConfiguration('terraformPolicyIamChecker');
         const managedLimit = config.get<number>('managedPolicyLimit', 6144);
         const inlineLimit = config.get<number>('inlinePolicyLimit', 10240);
         const warnThresholdPercent = config.get<number>('warnThresholdPercent', 90);

@@ -11,7 +11,7 @@ import { VariableResolver } from './variableResolver';
 export const sessionVariables: Map<string, string> = new Map();
 
 export function activate(context: vscode.ExtensionContext) {
-    const diagnosticCollection = vscode.languages.createDiagnosticCollection('iam-policy-checker');
+    const diagnosticCollection = vscode.languages.createDiagnosticCollection('terraform-iam-policy-checker');
     const diagnosticsProvider = new DiagnosticsProvider(diagnosticCollection);
     const variableResolver = new VariableResolver(sessionVariables);
     const analyzer = new PolicyAnalyzer(variableResolver);
@@ -25,7 +25,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Command: Check current open file (from Command Palette)
     const checkCurrentFile = vscode.commands.registerCommand(
-        'iam-policy-checker.checkCurrentFile',
+        'terraform-iam-policy-checker.checkCurrentFile',
         async () => {
             const editor = vscode.window.activeTextEditor;
             if (!editor) {
@@ -42,7 +42,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Command: Check specific file (from explorer context menu)
     const checkFile = vscode.commands.registerCommand(
-        'iam-policy-checker.checkFile',
+        'terraform-iam-policy-checker.checkFile',
         async (uri: vscode.Uri) => {
             if (!uri) {
                 const editor = vscode.window.activeTextEditor;
@@ -58,7 +58,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Command: Check all .tftpl files in a folder
     const checkFolder = vscode.commands.registerCommand(
-        'iam-policy-checker.checkFolder',
+        'terraform-iam-policy-checker.checkFolder',
         async (uri: vscode.Uri) => {
             if (!uri) {
                 vscode.window.showErrorMessage('No folder selected.');
@@ -76,7 +76,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Command: Check all .tftpl files in workspace
     const checkWorkspace = vscode.commands.registerCommand(
-        'iam-policy-checker.checkWorkspace',
+        'terraform-iam-policy-checker.checkWorkspace',
         async () => {
             const workspaceFolders = vscode.workspace.workspaceFolders;
             if (!workspaceFolders || workspaceFolders.length === 0) {
@@ -98,18 +98,18 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Command: Open settings
     const openSettings = vscode.commands.registerCommand(
-        'iam-policy-checker.openSettings',
+        'terraform-iam-policy-checker.openSettings',
         () => {
             vscode.commands.executeCommand(
                 'workbench.action.openSettings',
-                'iamPolicyChecker'
+                'terraformPolicyIamChecker'
             );
         }
     );
 
     // Command: Clear session variables
     const clearSessionVars = vscode.commands.registerCommand(
-        'iam-policy-checker.clearSessionVariables',
+        'terraform-iam-policy-checker.clearSessionVariables',
         () => {
             sessionVariables.clear();
             vscode.window.showInformationMessage('IAM Policy Checker: Session variables cleared.');
@@ -118,7 +118,7 @@ export function activate(context: vscode.ExtensionContext) {
 
     // Auto-check on save
     const onSaveDisposable = vscode.workspace.onDidSaveTextDocument(async (doc) => {
-        const config = vscode.workspace.getConfiguration('iamPolicyChecker');
+        const config = vscode.workspace.getConfiguration('terraformPolicyIamChecker');
         if (config.get<boolean>('autoCheckOnSave') && doc.fileName.endsWith('.tftpl')) {
             await runCheckOnFiles([doc.uri], diagnosticsProvider, analyzer);
         }

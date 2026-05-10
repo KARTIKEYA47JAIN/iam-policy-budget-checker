@@ -19,12 +19,12 @@
     "commands": [
       {
         "command": "terraform-iam-policy-checker.checkFile",
-        "title": "Check IAM Policy Budget",
+        "title": "Check IAM Policy Characters",
         "category": "IAM Policy"
       },
       {
         "command": "terraform-iam-policy-checker.checkFolder",
-        "title": "Check All IAM Policies in Folder",
+        "title": "Check All IAM Policy Characters in Folder",
         "category": "IAM Policy"
       },
       {
@@ -126,7 +126,7 @@
   },
   "repository": {
   "type": "git",
-  "url": "https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker"
+  "url": "https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker"
   },
-  "homepage": "https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker#readme"
+  "homepage": "https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker#readme"
 }

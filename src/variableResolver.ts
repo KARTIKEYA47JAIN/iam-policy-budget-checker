@@ -63,7 +63,7 @@ export class VariableResolver {
      * Returns null if the user cancels any prompt.
      */
     async resolveVariables(variables: string[]): Promise<Map<string, string> | null> {
-        const config = vscode.workspace.getConfiguration('iamPolicyChecker');
+        const config = vscode.workspace.getConfiguration('terraformPolicyIamChecker');
         const settingsMap = config.get<Record<string, string>>('variableSubstitutions') || {};
         const resolved = new Map<string, string>();
 

@@ -54,15 +54,7 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
         const cached = this.analyzer.getCachedResult(uri);
 
         if (!cached) {
-            // Show a placeholder CodeLens to trigger re-check
-            const range = new vscode.Range(0, 0, 0, 0);
-            return [
-                new vscode.CodeLens(range, {
-                    title: '$(beaker) Check IAM Policy Budget',
-                    command: 'iam-policy-checker.checkFile',
-                    arguments: [uri]
-                })
-            ];
+            return [];
         }
 
         const lenses = this.buildCodeLenses(cached, uri);
@@ -76,15 +68,11 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
         if (result.status === 'error' || result.status === 'skipped') {
             return [
                 new vscode.CodeLens(range, {
-                    title: `$(warning) IAM Policy: ${result.errorMessage || 'Error'} - [Re-check]`,
-                    command: 'iam-policy-checker.checkFile',
-                    arguments: [uri]
+                    title: `$(warning) IAM Policy: ${result.errorMessage || 'Error'}`,
+                    command: ''
                 })
             ];
         }
-
-        const managedStr = `${result.renderedSize.toLocaleString()} / ${result.managedLimit.toLocaleString()} (${result.managedPercent}%)`;
-        const inlineStr = `${result.renderedSize.toLocaleString()} / ${result.inlineLimit.toLocaleString()} (${result.inlinePercent}%)`;
 
         let icon = '$(pass)';
         if (result.status === 'over_inline') {
@@ -93,13 +81,12 @@ export class CodeLensProvider implements vscode.CodeLensProvider {
             icon = '$(warning)';
         }
 
-        const title = `${icon} Managed: ${managedStr}   Inline: ${inlineStr}   [Re-check]`;
+        const title = `${icon} Size: ${result.renderedSize.toLocaleString()} chars   ·   aws_iam_policy limit: ${result.managedLimit.toLocaleString()} (${result.managedPercent}%)   ·   aws_iam_role_policy limit: ${result.inlineLimit.toLocaleString()} (${result.inlinePercent}%)`;
 
-        return [
+       return [
             new vscode.CodeLens(range, {
                 title,
-                command: 'iam-policy-checker.checkFile',
-                arguments: [uri]
+                command: ''
             })
         ];
     }

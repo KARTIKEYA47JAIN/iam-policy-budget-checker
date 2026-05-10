@@ -193,7 +193,7 @@ Enable this setting to automatically re-check every time you save a `.tftpl` fil
 When you open a `.tftpl` file that has been checked, a summary line appears above line 1:
 
 ```
-✅ Managed: 3,711 / 6,144 (60.4%)   Inline: 3,711 / 10,240 (36.2%)
+✅ Size: 3,711 chars   ·   aws_iam_policy limit: 6,144 (60.4%)   ·   aws_iam_role_policy limit: 10,240 (36.2%)
 ```
 
 ---
