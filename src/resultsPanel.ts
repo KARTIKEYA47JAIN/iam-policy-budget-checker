@@ -13,7 +13,7 @@ export class ResultsPanelProvider {
         } else {
             ResultsPanelProvider.panel = vscode.window.createWebviewPanel(
                 'iamPolicyBudgetReport',
-                'IAM Policy Budget Report',
+                'IAM Policy Characters Report',
                 column,
                 {
                     enableScripts: true,
@@ -47,7 +47,7 @@ export class ResultsPanelProvider {
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>IAM Policy Budget Report</title>
+<title>IAM Policy Characters Report</title>
 <style>
   :root {
     --bg: var(--vscode-editor-background, #1e1e2e);
@@ -176,7 +176,7 @@ export class ResultsPanelProvider {
   <div class="header-left">
     <div class="header-icon">🛡️</div>
     <div>
-      <div class="header-title">IAM Policy Budget Report</div>
+      <div class="header-title">IAM Policy Characters Report</div>
       <div class="header-subtitle">Checked at ${timeStr} &nbsp;·&nbsp; ${total} file${total !== 1 ? 's' : ''} analyzed</div>
     </div>
   </div>
