@@ -104,13 +104,15 @@ Checked at 14:32:05 · 3 files analyzed          ✅ 3/3 within managed limit
 ```
 
 ### Status colours
+| Colour | Bar | Meaning | What to do |
+|--------|-----|---------|------------|
+| 🟢 **Green**  | Either | Below warn threshold % of that limit | Safe for that policy type |
+| 🟡 **Yellow** | Either | Above warn threshold % but within hard limit | Approaching limit - review size |
+| 🔴 **Red**    | Managed | Over 6,144 chars | Cannot use `aws_iam_policy` - switch to inline |
+| 🔴 **Red**    | Inline  | Over 10,240 chars | Must split into multiple policies |
+| ⚪ **Gray**   | Either | File has an error | Check the error message shown |
 
-| Colour | Meaning | What to do |
-|--------|---------|------------|
-| 🟢 **Green** | Under 6,144 chars | Safe to deploy as `aws_iam_policy` |
-| 🟡 **Yellow** | 6,144–10,240 chars | Switch to `aws_iam_role_policy` (inline) |
-| 🔴 **Red** | Over 10,240 chars | Split into multiple policies |
-| ⚪ **Gray** | File has an error | Check the error message shown |
+Each bar (Managed and Inline) is evaluated **independently**. One bar can be yellow while the other stays green.
 
 ---
 
@@ -227,6 +229,12 @@ Each IAM statement's individual size contribution, sorted largest first. This te
 
 **Q: Can I use this without Terraform?**  
 Yes - any JSON file saved with a `.tftpl` extension will be analysed. The variable substitution step is simply skipped if there are no `${...}` patterns.
+
+**Q: How does the warn threshold percentage work?**  
+Each bar is evaluated independently against its own limit. If your policy is at 78% of the managed limit and your threshold is set to 50%, the managed bar turns yellow. If the same policy is at 47% of the inline limit, the inline bar stays green. The threshold applies to both bars separately - it is not a single global toggle.
+
+**Q: When does a bar turn red?**  
+Red means the policy has exceeded the hard AWS limit for that policy type - over 6,144 chars for `aws_iam_policy` (managed bar) or over 10,240 chars for `aws_iam_role_policy` (inline bar). Yellow means you are approaching the limit based on your threshold setting but have not exceeded it yet.
 
 ---
 
