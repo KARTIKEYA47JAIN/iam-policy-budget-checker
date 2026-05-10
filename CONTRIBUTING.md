@@ -1,4 +1,4 @@
-# Contributing to IAM Policy Budget Checker
+# Contributing to Terraform IAM Policy Checker
 
 Thanks for your interest in contributing. This is a VSCode extension built for DevOps engineers working with AWS IAM policies and Terraform.
 
@@ -15,8 +15,8 @@ Thanks for your interest in contributing. This is a VSCode extension built for D
 ## Setting Up Locally
 
 ```bash
-git clone https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker.git
-cd iam-policy-budget-checker
+git clone https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker.git
+cd terraform-iam-policy-checker
 npm install
 npm run compile
 ```

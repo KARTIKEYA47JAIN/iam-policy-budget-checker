@@ -1,6 +1,6 @@
 {
   "name": "iam-policy-budget-checker",
-  "displayName": "IAM Policy Budget Checker",
+  "displayName": "Terraform IAM Policy Checker",
   "description": "Analyzes AWS IAM policy .tftpl files to check character limits before terraform apply",
   "version": "1.0.0",
   "publisher": "devops-tools",
@@ -18,32 +18,32 @@
   "contributes": {
     "commands": [
       {
-        "command": "iam-policy-checker.checkFile",
+        "command": "terraform-iam-policy-checker.checkFile",
         "title": "Check IAM Policy Budget",
         "category": "IAM Policy"
       },
       {
-        "command": "iam-policy-checker.checkFolder",
+        "command": "terraform-iam-policy-checker.checkFolder",
         "title": "Check All IAM Policies in Folder",
         "category": "IAM Policy"
       },
       {
-        "command": "iam-policy-checker.checkWorkspace",
+        "command": "terraform-iam-policy-checker.checkWorkspace",
         "title": "IAM Policy: Check All in Workspace",
         "category": "IAM Policy"
       },
       {
-        "command": "iam-policy-checker.checkCurrentFile",
+        "command": "terraform-iam-policy-checker.checkCurrentFile",
         "title": "IAM Policy: Check Budget",
         "category": "IAM Policy"
       },
       {
-        "command": "iam-policy-checker.openSettings",
+        "command": "terraform-iam-policy-checker.openSettings",
         "title": "IAM Policy: Open Settings",
         "category": "IAM Policy"
       },
       {
-        "command": "iam-policy-checker.clearSessionVariables",
+        "command": "terraform-iam-policy-checker.clearSessionVariables",
         "title": "IAM Policy: Clear Session Variables",
         "category": "IAM Policy"
       }
@@ -51,21 +51,21 @@
     "menus": {
       "explorer/context": [
         {
-          "command": "iam-policy-checker.checkFile",
+          "command": "terraform-iam-policy-checker.checkFile",
           "when": "resourceExtname == .tftpl",
           "group": "navigation"
         },
         {
-          "command": "iam-policy-checker.checkFolder",
+          "command": "terraform-iam-policy-checker.checkFolder",
           "when": "explorerResourceIsFolder",
           "group": "navigation"
         }
       ]
     },
     "configuration": {
-      "title": "IAM Policy Budget Checker",
+      "title": "Terraform IAM Policy Checker",
       "properties": {
-        "iamPolicyChecker.variableSubstitutions": {
+        "terraformPolicyIamChecker.variableSubstitutions": {
           "type": "object",
           "default": {},
           "description": "User-defined variable substitution map for .tftpl template rendering. Keys are variable names without the ${} wrapper. Values are dummy strings used only for size estimation.",
@@ -79,27 +79,27 @@
             }
           ]
         },
-        "iamPolicyChecker.managedPolicyLimit": {
+        "terraformPolicyIamChecker.managedPolicyLimit": {
           "type": "number",
           "default": 6144,
           "description": "AWS managed policy character limit (aws_iam_policy)"
         },
-        "iamPolicyChecker.inlinePolicyLimit": {
+        "terraformPolicyIamChecker.inlinePolicyLimit": {
           "type": "number",
           "default": 10240,
           "description": "AWS inline policy character limit (aws_iam_role_policy)"
         },
-        "iamPolicyChecker.autoCheckOnSave": {
+        "terraformPolicyIamChecker.autoCheckOnSave": {
           "type": "boolean",
           "default": false,
           "description": "Automatically re-check .tftpl files on save"
         },
-        "iamPolicyChecker.warnThresholdPercent": {
+        "terraformPolicyIamChecker.warnThresholdPercent": {
           "type": "number",
           "default": 90,
           "description": "Show yellow warning when usage exceeds this percentage of the managed limit. Does not affect red/green status."
         },
-        "iamPolicyChecker.rememberSessionVariables": {
+        "terraformPolicyIamChecker.rememberSessionVariables": {
           "type": "boolean",
           "default": true,
           "description": "Remember variable values entered during a session without persisting to settings"

@@ -1,6 +1,6 @@
 # Changelog
 
-All notable changes to IAM Policy Budget Checker will be documented here.
+All notable changes to Terraform IAM Policy Checker will be documented here.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
@@ -32,12 +32,12 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 - 47 unit tests covering size logic, variable resolution, and substitution
 
 ### Settings introduced
-- `iamPolicyChecker.variableSubstitutions` — pre-configure variable values
-- `iamPolicyChecker.managedPolicyLimit` — configurable managed limit (default 6144)
-- `iamPolicyChecker.inlinePolicyLimit` — configurable inline limit (default 10240)
-- `iamPolicyChecker.autoCheckOnSave` — auto-check on file save (default false)
-- `iamPolicyChecker.warnThresholdPercent` — warning threshold percentage (default 90)
-- `iamPolicyChecker.rememberSessionVariables` — session variable caching (default true)
+- `terraformPolicyIamChecker.variableSubstitutions` — pre-configure variable values
+- `terraformPolicyIamChecker.managedPolicyLimit` — configurable managed limit (default 6144)
+- `terraformPolicyIamChecker.inlinePolicyLimit` — configurable inline limit (default 10240)
+- `terraformPolicyIamChecker.autoCheckOnSave` — auto-check on file save (default false)
+- `terraformPolicyIamChecker.warnThresholdPercent` — warning threshold percentage (default 90)
+- `terraformPolicyIamChecker.rememberSessionVariables` — session variable caching (default true)
 
 ---
 

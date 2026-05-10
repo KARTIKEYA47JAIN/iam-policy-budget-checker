@@ -1,4 +1,4 @@
-# IAM Policy Budget Checker
+# Terraform IAM Policy Checker
 
 ### Author's Note
 *To be honest, if you ask me to explain the `.ts` files line by line, I genuinely cannot. 😅*
@@ -54,7 +54,7 @@ These limits apply to the **minified JSON** - the version with all spaces and ne
 ### Step 1 - Install
 
 **Option A: From VSIX file**
-1. Download `iam-policy-budget-checker-1.0.0.vsix` from the [Releases page](https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker/releases)
+1. Download `terraform-iam-policy-checker-1.0.0.vsix` from the [Releases page](https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker/releases)
 2. Open VSCode
 3. Press `Ctrl+Shift+P` → type `Extensions: Install from VSIX`
 4. Select the downloaded file
@@ -62,7 +62,7 @@ These limits apply to the **minified JSON** - the version with all spaces and ne
 
 **Option B: Terminal**  
 ```bash
-code --install-extension iam-policy-budget-checker-1.0.0.vsix
+code --install-extension terraform-iam-policy-checker-1.0.0.vsix
 ```
 
 ### Step 2 - Open your Terraform policy folder
@@ -148,7 +148,7 @@ Open your workspace settings (`Ctrl+Shift+P` → `Open Workspace Settings (JSON)
 
 ```json
 {
-  "iamPolicyChecker.variableSubstitutions": {
+  "terraformPolicyIamChecker.variableSubstitutions": {
     "region": "eu-central-1",
     "aws_account_id": "123456789012",
     "environment": "production",
@@ -184,7 +184,7 @@ Enable this setting to automatically re-check every time you save a `.tftpl` fil
 
 ```json
 {
-  "iamPolicyChecker.autoCheckOnSave": true
+  "terraformPolicyIamChecker.autoCheckOnSave": true
 }
 ```
 
@@ -202,12 +202,12 @@ When you open a `.tftpl` file that has been checked, a summary line appears abov
 
 | Setting | Default | Description |
 |---------|---------|-------------|
-| `iamPolicyChecker.variableSubstitutions` | `{}` | Your variable values - set these to avoid being prompted |
-| `iamPolicyChecker.managedPolicyLimit` | `6144` | AWS managed policy limit. Only change if AWS updates this |
-| `iamPolicyChecker.inlinePolicyLimit` | `10240` | AWS inline policy limit. Only change if AWS updates this |
-| `iamPolicyChecker.autoCheckOnSave` | `false` | Re-check automatically when you save |
-| `iamPolicyChecker.warnThresholdPercent` | `90` | Show a warning in the Problems panel when over this % |
-| `iamPolicyChecker.rememberSessionVariables` | `true` | Remember values you type in during the current session |
+| `terraformPolicyIamChecker.variableSubstitutions` | `{}` | Your variable values - set these to avoid being prompted |
+| `terraformPolicyIamChecker.managedPolicyLimit` | `6144` | AWS managed policy limit. Only change if AWS updates this |
+| `terraformPolicyIamChecker.inlinePolicyLimit` | `10240` | AWS inline policy limit. Only change if AWS updates this |
+| `terraformPolicyIamChecker.autoCheckOnSave` | `false` | Re-check automatically when you save |
+| `terraformPolicyIamChecker.warnThresholdPercent` | `90` | Show a warning in the Problems panel when over this % |
+| `terraformPolicyIamChecker.rememberSessionVariables` | `true` | Remember values you type in during the current session |
 
 ---
 
@@ -220,7 +220,7 @@ Yes. If there are no variables, the extension skips the substitution step and me
 That file is skipped and shown as "Skipped - user cancelled" in the report. All other files in the same run are still checked.
 
 **Q: The size shown seems wrong.**  
-The most common reason is that your variable values in settings are shorter than the real values used in deployment. Open Settings and make sure `iamPolicyChecker.variableSubstitutions` contains values that match your real environment as closely as possible.
+The most common reason is that your variable values in settings are shorter than the real values used in deployment. Open Settings and make sure `terraformPolicyIamChecker.variableSubstitutions` contains values that match your real environment as closely as possible.
 
 **Q: What does the Statement breakdown show?**  
 Each IAM statement's individual size contribution, sorted largest first. This tells you exactly which statements to trim or split if you are over the limit.
@@ -237,8 +237,8 @@ Yes - any JSON file saved with a `.tftpl` extension will be analysed. The variab
 ### Building from Source
 
 ```bash
-git clone https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker
-cd iam-policy-budget-checker
+git clone https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker
+cd terraform-iam-policy-checker
 npm install
 npm run compile
 ```
@@ -328,7 +328,7 @@ src/
 ```
 For each ${variable} found in the file:
 │
-├── Is it in iamPolicyChecker.variableSubstitutions settings?
+├── Is it in terraformPolicyIamChecker.variableSubstitutions settings?
 │   YES → use that value, move to next variable
 │   NO  ↓
 │
