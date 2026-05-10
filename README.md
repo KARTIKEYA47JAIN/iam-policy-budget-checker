@@ -86,7 +86,7 @@ That's it. A report panel opens showing you exactly where you stand.
 When you run a check, a report panel opens on the right side of your editor:
 
 ```
-🛡️ IAM Policy Budget Report
+🛡️ IAM Policy Characters Report
 Checked at 14:32:05 · 3 files analyzed          ✅ 3/3 within managed limit
 
 ┌─────────────────────────────────────────────────────┐
