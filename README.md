@@ -74,7 +74,7 @@ Open the folder containing your `.tftpl` policy files in VSCode.
 Right-click any `.tftpl` file in the Explorer sidebar:
 
 ```
-Right-click → Check IAM Policy Budget
+Right-click → Check IAM Policy Characters
 ```
 
 That's it. A report panel opens showing you exactly where you stand.
@@ -173,7 +173,7 @@ Open your workspace settings (`Ctrl+Shift+P` → `Open Workspace Settings (JSON)
 
 | Command | What it does |
 |---------|-------------|
-| `IAM Policy: Check Budget` | Checks the file currently open in the editor |
+| `IAM Policy: Check Characters` | Checks the file currently open in the editor |
 | `IAM Policy: Check All in Workspace` | Scans your entire workspace |
 | `IAM Policy: Open Settings` | Opens the extension settings |
 | `IAM Policy: Clear Session Variables` | Forgets all variable values entered this session |

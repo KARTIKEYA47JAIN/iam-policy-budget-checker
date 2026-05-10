@@ -24,9 +24,9 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 - CodeLens inline hint above line 1 of every `.tftpl` file showing current sizes
 - Gutter warning/error icons with hover tooltips
 - Problems panel integration with red squiggles on error lines
-- Right-click context menu on `.tftpl` files → Check IAM Policy Budget
-- Right-click context menu on folders → Check All IAM Policies in Folder
-- Command Palette: `IAM Policy: Check Budget`, `IAM Policy: Check All in Workspace`
+- Right-click context menu on `.tftpl` files → Check IAM Policy Characters
+- Right-click context menu on folders → Check All IAM Policy Characters in Folder
+- Command Palette: `IAM Policy: Check Characters`, `IAM Policy: Check All in Workspace`
 - Auto-check on save (optional, disabled by default)
 - File modification time cache — re-check always reads fresh file content
 - 47 unit tests covering size logic, variable resolution, and substitution

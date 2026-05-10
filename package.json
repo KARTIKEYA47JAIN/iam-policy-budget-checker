@@ -34,7 +34,7 @@
       },
       {
         "command": "terraform-iam-policy-checker.checkCurrentFile",
-        "title": "IAM Policy: Check Budget",
+        "title": "IAM Policy: Check Characters",
         "category": "IAM Policy"
       },
       {
