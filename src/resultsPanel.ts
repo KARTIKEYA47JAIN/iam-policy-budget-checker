@@ -249,10 +249,14 @@ ${total === 0
                 ${result.errorLine !== undefined ? `<div class="error-detail">Line ${result.errorLine + 1}${result.errorColumn !== undefined ? `, col ${result.errorColumn + 1}` : ''}: ${escapeHtml(result.errorMessage || 'Parse error')}</div>` : ''}
               </div>
             </div>`;
-        }
+        } 
 
-        const mColor = result.status === 'ok' ? 'green' : result.status === 'warn' ? 'yellow' : 'red';
-        const iColor = result.status === 'over_inline' ? 'red' : 'green';
+        const mColor = result.renderedSize > result.managedLimit ? 'red' 
+            : result.managedPercent >= result.warnThresholdPercent ? 'yellow' 
+            : 'green';
+        const iColor = result.renderedSize > result.inlineLimit ? 'red'
+            : result.inlinePercent >= result.warnThresholdPercent ? 'yellow'
+            : 'green';
         const mPct = Math.min(result.managedPercent, 100);
         const iPct = Math.min(result.inlinePercent, 100);
 
