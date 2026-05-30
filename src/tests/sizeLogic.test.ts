@@ -14,7 +14,7 @@
 import * as assert from 'assert';
 
 // ─────────────────────────────────────────────────────────────────────────────
-// Helpers — these mirror the logic in analyzer.ts exactly
+// Helpers - these mirror the logic in analyzer.ts exactly
 // By extracting and testing the logic here, we confirm the math is right
 // without needing to mock the VSCode API or the file system.
 // ─────────────────────────────────────────────────────────────────────────────
@@ -48,7 +48,7 @@ function minify(json: string): string {
 // Status determination
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('Size limits — status determination', () => {
+suite('Size limits - status determination', () => {
 
     test('returns ok when size is well under managed limit', () => {
         assert.strictEqual(getStatus(1000), 'ok');
@@ -59,7 +59,7 @@ suite('Size limits — status determination', () => {
     });
 
     test('returns ok when size equals managed limit', () => {
-        // Exactly at the limit is still ok — AWS allows up to 6144
+        // Exactly at the limit is still ok - AWS allows up to 6144
         assert.strictEqual(getStatus(6144), 'ok');
     });
 
@@ -93,7 +93,7 @@ suite('Size limits — status determination', () => {
 // Percentage calculation
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('Size limits — percentage calculation', () => {
+suite('Size limits - percentage calculation', () => {
 
     test('calculates 0% for empty policy', () => {
         assert.strictEqual(getManagedPercent(0), 0);
@@ -134,7 +134,7 @@ suite('Size limits — percentage calculation', () => {
 // Minification (the most important logic in the extension)
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('Minification — JSON.stringify is the measure', () => {
+suite('Minification - JSON.stringify is the measure', () => {
 
     test('minified JSON is shorter than pretty-printed JSON', () => {
         const pretty = JSON.stringify({ Version: '2012-10-17', Statement: [] }, null, 2);
@@ -154,7 +154,7 @@ suite('Minification — JSON.stringify is the measure', () => {
         assert.ok(!mini.includes('  '), 'minified JSON should not contain double spaces');
     });
 
-    test('minified JSON is still valid — can be parsed back', () => {
+    test('minified JSON is still valid - can be parsed back', () => {
         const original = { Version: '2012-10-17', Statement: [{ Effect: 'Allow' }] };
         const mini     = minify(JSON.stringify(original, null, 2));
         const reparsed = JSON.parse(mini);

@@ -64,7 +64,7 @@ refactor: extract minification logic into separate utility function
 ```
 
 **Rules:**
-- Use present tense — "add feature" not "added feature"
+- Use present tense - "add feature" not "added feature"
 - Keep the first line under 72 characters
 - No capital letter at the start
 - No full stop at the end
@@ -72,10 +72,10 @@ refactor: extract minification logic into separate utility function
 ### What needs a test
 
 Any change to these files needs a corresponding test:
-- `src/variableResolver.ts` — add to `src/tests/variableResolver.test.ts`
-- Size calculation logic — add to `src/tests/sizeLogic.test.ts`
+- `src/variableResolver.ts` - add to `src/tests/variableResolver.test.ts`
+- Size calculation logic - add to `src/tests/sizeLogic.test.ts`
 
-Changes to `resultsPanel.ts`, `codeLensProvider.ts`, `diagnosticsProvider.ts` are UI changes that are harder to unit test — manual testing via F5 is acceptable for those.
+Changes to `resultsPanel.ts`, `codeLensProvider.ts`, `diagnosticsProvider.ts` are UI changes that are harder to unit test - manual testing via F5 is acceptable for those.
 
 ---
 
@@ -83,8 +83,8 @@ Changes to `resultsPanel.ts`, `codeLensProvider.ts`, `diagnosticsProvider.ts` ar
 
 1. Fork the repo and create your branch from `main`
 2. Make your changes
-3. Run `npm test` — all tests must pass
-4. Run `npm run compile` — no TypeScript errors
+3. Run `npm test` - all tests must pass
+4. Run `npm run compile` - no TypeScript errors
 5. Update `CHANGELOG.md` with what you changed under a new `[Unreleased]` section
 6. Open a pull request with a clear description of what changed and why
 
@@ -112,4 +112,4 @@ These are things that would make this extension genuinely more useful:
 
 ---
 
-*This project was built by a DevOps engineer to solve a real deployment problem. AI-assisted implementation — contributions from the community are welcome.*
+*This project was built by a DevOps engineer to solve a real deployment problem. AI-assisted implementation - contributions from the community are welcome.*

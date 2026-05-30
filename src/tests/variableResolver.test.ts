@@ -2,7 +2,7 @@
  * Unit tests for VariableResolver
  *
  * These test pure logic methods that do not touch the VSCode API.
- * They run with plain Node.js — no Extension Development Host needed.
+ * They run with plain Node.js - no Extension Development Host needed.
  *
  * Run with: npm test
  */
@@ -10,7 +10,7 @@
 import * as assert from 'assert';
 import { VariableResolver } from '../variableResolver';
 
-// VariableResolver needs a session Map — give it an empty one for tests
+// VariableResolver needs a session Map - give it an empty one for tests
 // that don't care about caching, or a pre-filled one for cache tests.
 function makeResolver(sessionVars?: Map<string, string>): VariableResolver {
     return new VariableResolver(sessionVars ?? new Map());
@@ -20,7 +20,7 @@ function makeResolver(sessionVars?: Map<string, string>): VariableResolver {
 // extractVariables
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('VariableResolver — extractVariables', () => {
+suite('VariableResolver - extractVariables', () => {
 
     test('finds a single variable', () => {
         const resolver = makeResolver();
@@ -39,7 +39,7 @@ suite('VariableResolver — extractVariables', () => {
 
     test('deduplicates variables that appear multiple times', () => {
         const resolver = makeResolver();
-        // bucket_name appears twice — should only be returned once
+        // bucket_name appears twice - should only be returned once
         const content = '"${bucket_name}/a", "${bucket_name}/b"';
         const vars = resolver.extractVariables(content);
         assert.strictEqual(vars.filter(v => v === 'bucket_name').length, 1);
@@ -69,7 +69,7 @@ suite('VariableResolver — extractVariables', () => {
 // applySubstitutions
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('VariableResolver — applySubstitutions', () => {
+suite('VariableResolver - applySubstitutions', () => {
 
     test('replaces a single variable', () => {
         const resolver = makeResolver();
@@ -127,7 +127,7 @@ suite('VariableResolver — applySubstitutions', () => {
 // findUnresolved
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('VariableResolver — findUnresolved', () => {
+suite('VariableResolver - findUnresolved', () => {
 
     test('returns empty array when all variables resolved', () => {
         const resolver = makeResolver();
@@ -156,7 +156,7 @@ suite('VariableResolver — findUnresolved', () => {
 // findMalformed
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('VariableResolver — findMalformed', () => {
+suite('VariableResolver - findMalformed', () => {
 
     test('returns empty array for well-formed template', () => {
         const resolver = makeResolver();
@@ -186,7 +186,7 @@ suite('VariableResolver — findMalformed', () => {
 // getPlaceholder
 // ─────────────────────────────────────────────────────────────────────────────
 
-suite('VariableResolver — getPlaceholder', () => {
+suite('VariableResolver - getPlaceholder', () => {
 
     test('returns account ID format for account_id variable', () => {
         const resolver = makeResolver();

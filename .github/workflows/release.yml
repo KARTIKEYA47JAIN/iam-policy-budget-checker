@@ -1,6 +1,6 @@
 name: Release
 
-# Runs only when you push a tag starting with 'v' — e.g. v1.0.0, v1.1.0
+# Runs only when you push a tag starting with 'v' - e.g. v1.0.0, v1.1.0
 # This is how you trigger a release:
 #   git tag v1.1.0
 #   git push origin v1.1.0
@@ -37,7 +37,7 @@ jobs:
 
       - name: Run tests
         run: npm test
-        # Release is blocked if any test fails — never ship broken code
+        # Release is blocked if any test fails - never ship broken code
 
       - name: Get version from tag
         id: get_version
@@ -57,7 +57,7 @@ jobs:
           files: '*.vsix'
           generate_release_notes: true
           # generate_release_notes: true auto-generates release notes from
-          # commit messages since the last tag — this is why conventional
+          # commit messages since the last tag - this is why conventional
           # commit messages matter (feat:, fix:, docs: etc.)
           body: |
             ## Installation
