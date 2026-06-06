@@ -190,6 +190,10 @@ Enable this setting to automatically re-check every time you save a `.tftpl` fil
 }
 ```
 
+> **Why I kept this off by default:** Auto-check on save sounds ideal but has a catch — if your variables aren't pre-configured in settings, every Ctrl+S triggers input prompts mid-edit. That's more annoying than helpful. My recommendation: set up your `variableSubstitutions` first, then enable this. Once your variables are saved, Ctrl+S silently updates the CodeLens bar above your file with the latest size — no clicks needed, no interruptions.
+
+---
+
 ### CodeLens (inline editor hint)
 
 When you open a `.tftpl` file that has been checked, a summary line appears above line 1:
