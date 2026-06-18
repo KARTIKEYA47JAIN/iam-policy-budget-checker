@@ -56,7 +56,7 @@ These limits apply to the **minified JSON** - the version with all spaces and ne
 ### Step 1 - Install
 
 **Option A: From VSIX file**
-1. Download `terraform-iam-policy-checker-1.0.0.vsix` from the [Releases page](https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker/releases)
+1. Download `terraform-iam-policy-checker-1.1.0.vsix` from the [Releases page](https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker/releases)
 2. Open VSCode
 3. Press `Ctrl+Shift+P` → type `Extensions: Install from VSIX`
 4. Select the downloaded file
@@ -64,7 +64,7 @@ These limits apply to the **minified JSON** - the version with all spaces and ne
 
 **Option B: Terminal**  
 ```bash
-code --install-extension terraform-iam-policy-checker-1.0.0.vsix
+code --install-extension terraform-iam-policy-checker-1.1.0.vsix
 ```
 
 ### Step 2 - Open your Terraform policy folder

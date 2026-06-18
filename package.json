@@ -2,7 +2,7 @@
   "name": "iam-policy-budget-checker",
   "displayName": "Terraform IAM Policy Checker",
   "description": "Analyzes AWS IAM policy .tftpl files to check character limits before terraform apply",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "publisher": "devops-tools",
   "engines": {
     "vscode": "^1.75.0"
@@ -125,8 +125,8 @@
     "typescript": "^5.0.0"
   },
   "repository": {
-  "type": "git",
-  "url": "https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker"
+    "type": "git",
+    "url": "https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker"
   },
   "homepage": "https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker#readme"
 }
