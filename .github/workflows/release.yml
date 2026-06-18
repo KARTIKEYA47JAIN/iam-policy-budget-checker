@@ -1,10 +1,5 @@
 name: Release
 
-# Runs only when you push a tag starting with 'v' - e.g. v1.0.0, v1.1.0
-# This is how you trigger a release:
-#   git tag v1.1.0
-#   git push origin v1.1.0
-
 on:
   push:
     tags:
@@ -17,7 +12,6 @@ jobs:
 
     permissions:
       contents: write
-      # 'write' permission needed to create GitHub Releases and upload assets
 
     steps:
       - name: Checkout code
@@ -37,17 +31,13 @@ jobs:
 
       - name: Run tests
         run: npm test
-        # Release is blocked if any test fails - never ship broken code
 
       - name: Get version from tag
         id: get_version
         run: echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-        # Extracts '1.1.0' from 'refs/tags/v1.1.0'
-        # Available as ${{ steps.get_version.outputs.VERSION }}
 
       - name: Package VSIX
-        run: npx vsce package --no-dependencies --allow-missing-repository
-        # Creates iam-policy-budget-checker-X.X.X.vsix
+        run: npx @vscode/vsce package --no-dependencies --allow-missing-repository
 
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
@@ -56,21 +46,17 @@ jobs:
           tag_name: ${{ github.ref_name }}
           files: '*.vsix'
           generate_release_notes: true
-          # generate_release_notes: true auto-generates release notes from
-          # commit messages since the last tag - this is why conventional
-          # commit messages matter (feat:, fix:, docs: etc.)
           body: |
             ## Installation
 
-            1. Download `iam-policy-budget-checker-${{ steps.get_version.outputs.VERSION }}.vsix` below
+            1. Download the `.vsix` file below
             2. Open VSCode
-            3. Press `Ctrl+Shift+P` → `Extensions: Install from VSIX`
+            3. Press `Ctrl+Shift+P` then type `Extensions: Install from VSIX`
             4. Select the downloaded file
             5. Restart VSCode
 
             Or via terminal:
-            ```bash
-            code --install-extension iam-policy-budget-checker-${{ steps.get_version.outputs.VERSION }}.vsix
-            ```
 
-            See [CHANGELOG.md](https://github.com/KARTIKEYA47JAIN/iam-policy-budget-checker/blob/main/CHANGELOG.md) for what changed in this version.
+                code --install-extension terraform-iam-policy-checker-${{ steps.get_version.outputs.VERSION }}.vsix
+
+            See [CHANGELOG.md](https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker/blob/main/CHANGELOG.md) for what changed in this version.
