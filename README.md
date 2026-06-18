@@ -36,6 +36,8 @@ The frustrating part - AWS only checks the size limit at **apply time**, not at 
 
 **This extension fixes that.** It substitutes your variables with realistic values, minifies the JSON exactly the way AWS does, and tells you how close you are to the limits - right inside VSCode, before you deploy anything.
 
+It also catches two common policy mistakes that waste characters and introduce security risk: **duplicate actions** and **wildcard permissions**.
+
 ---
 
 ## AWS IAM Size Limits (What This Checks)
@@ -99,8 +101,15 @@ Checked at 14:32:05 · 3 files analyzed          ✅ 3/3 within managed limit
 │                                                     │
 │ WITHIN MANAGED LIMIT  (+2,433 chars remaining)      |
 │                                                     │
-│ Statement breakdown (17 statements)          ▼      │
-└─────────────────────────────────────────────────────┘
+│ Issues found                                        │
+│   ⚠️ Wildcard in ECR     Action: ecr:*              │
+│   ⚠️ Wildcard in S3      Action: s3:*               │
+│   🔁 Duplicate in ECRRepo  ecr:CreateRepository 3x  │
+│      Remove 2 duplicates - saves ~52 chars           │
+│   💡 Removing all duplicates saves ~52 chars total  │
+│                                                      │
+│ Statement breakdown (17 statements · 3 with issues) ▼│
+└──────────────────────────────────────────────────────┘
 ```
 
 ### Status colours
@@ -113,6 +122,41 @@ Checked at 14:32:05 · 3 files analyzed          ✅ 3/3 within managed limit
 | ⚪ **Gray**   | Either | File has an error | Check the error message shown |
 
 Each bar (Managed and Inline) is evaluated **independently**. One bar can be yellow while the other stays green.
+
+---
+
+## Policy Quality Checks
+
+Every analysis automatically runs two additional checks beyond size measurement.
+
+### Wildcard detection
+
+Any statement using `*` or service wildcards like `s3:*`, `ec2:*` in its Action or Resource field is flagged:
+
+```
+⚠️ Wildcard in S3     Action: s3:*
+⚠️ Wildcard in EC2    Action: ec2:*  Resource: *
+```
+
+This is a **warning, never an error**. Wildcards are sometimes intentional - a `Deny` statement scoped to `Resource: *` is correct and expected. The flag is there so you consciously confirm each wildcard is deliberate rather than a copy-paste leftover from a broader policy.
+
+### Duplicate action detection
+
+Any action that appears more than once in the same statement is flagged with the exact character savings:
+
+```
+🔁 Duplicate in ECRRepo   ecr:CreateRepository appears 3x
+                          Remove 2 duplicates - saves ~52 chars
+```
+
+When removing duplicates would bring an over-limit policy back under the limit, the extension tells you directly:
+
+```
+💡 Removing all duplicates saves ~52 chars total
+   would bring policy to 6,092 chars - within managed limit
+```
+
+Both checks run automatically on every analysis - no extra configuration needed.
 
 ---
 
@@ -238,6 +282,12 @@ Each bar is evaluated independently against its own limit. If your policy is at 
 **Q: When does a bar turn red?**  
 Red means the policy has exceeded the hard AWS limit for that policy type - over 6,144 chars for `aws_iam_policy` (managed bar) or over 10,240 chars for `aws_iam_role_policy` (inline bar). Yellow means you are approaching the limit based on your threshold setting but have not exceeded it yet.
 
+**Q: I have wildcards in my policy but they are intentional. Can I suppress the warning?**  
+Not currently - the wildcard flag is always shown when wildcards exist. It is a prompt to confirm intentionality, not a blocker. A future version may add a way to mark specific wildcards as acknowledged.
+
+**Q: The duplicate detection shows character savings but I still need those actions - why?**  
+Duplicate actions in JSON are collapsed by the parser - only the last occurrence is kept. So the duplicates are not actually doing anything. Removing them reduces your character count with no change in effective permissions.
+
 ---
 
 ## For Developers
@@ -266,7 +316,8 @@ vsce package --no-dependencies
 ```
 src/
 ├── extension.ts          Entry point. Registers all commands and listeners.
-├── analyzer.ts           Core logic. Reads files, resolves variables, measures size.
+├── analyzer.ts           Core logic. Reads files, resolves variables, measures size,
+│                         detects wildcards and duplicate actions.
 ├── variableResolver.ts   Handles ${variable} extraction, prompts, and caching.
 ├── resultsPanel.ts       Builds the Webview HTML report panel.
 ├── codeLensProvider.ts   Shows inline size summary above line 1 of .tftpl files.
@@ -312,7 +363,9 @@ src/
 │     .length = what AWS counts                                   │
 │  8. Compare against limits → status: ok/warn/over_inline        │
 │  9. Per-statement size breakdown, sorted largest first          │
-│ 10. Store result in cache with file mtime                       │
+│ 10. Detect wildcards in Action and Resource fields              │
+│ 11. Detect duplicate actions and calculate char savings         │
+│ 12. Store result in cache with file mtime                       │
 └──────────────────────────────┬──────────────────────────────────┘
                                │ PolicyAnalysisResult
               ┌────────────────┼─────────────────┐
@@ -326,10 +379,9 @@ src/
 │ (Ctrl+Shift+M)  │  │ Opens or reuses  │  │ the size line     │
 │                 │  │ the panel.       │  │ above line 1 of   │
 │ Red squiggles   │  │                  │  │ the open file.    │
-│ on error lines  │  │ Messages back    │  │                   │
-└─────────────────┘  │ via postMessage  │  └───────────────────┘
-                     │ (open file,      │
-                     │  open settings)  │
+│ on error lines  │  │ Shows size bars, │  └───────────────────┘
+└─────────────────┘  │ issues section,  │
+                     │ statement badges │
                      └──────────────────┘
 ```
 
