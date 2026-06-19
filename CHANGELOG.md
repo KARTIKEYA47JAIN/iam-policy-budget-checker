@@ -13,10 +13,10 @@ Versions follow [Semantic Versioning](https://semver.org/spec/v2.0.0.html):
 ## [1.1.0] - 2026-05-15
 
 ### Added
-- Wildcard detection — flags `*` and service wildcards like `s3:*`, `ec2:*` in Action and Resource fields
-- Duplicate action detection — identifies repeated actions within the same statement and calculates exact character savings
-- Savings callout — when removing duplicates would bring an over-limit policy under the limit, shows the exact fix and chars saved
-- Statement badges in breakdown — statements with issues are marked with `🔁 dup` and `⚠️ wildcard` badges
+- Wildcard detection - flags `*` and service wildcards like `s3:*`, `ec2:*` in Action and Resource fields
+- Duplicate action detection - identifies repeated actions within the same statement and calculates exact character savings
+- Savings callout - when removing duplicates would bring an over-limit policy under the limit, shows the exact fix and chars saved
+- Statement badges in breakdown - statements with issues are marked with `🔁 dup` and `⚠️ wildcard` badges
 
 ### Changed
 - Statement breakdown toggle label now shows count of statements with issues e.g. `17 statements · 3 with issues`
