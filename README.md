@@ -34,7 +34,7 @@ Now you are doing an emergency rollback.
 
 The frustrating part - AWS only checks the size limit at **apply time**, not at plan time. And if your policies use Terraform's `templatefile()` function with `${variable}` placeholders, you cannot even measure the real size just by looking at the file - the variables are shorter than the real values they become.
 
-**This extension fixes that.** It substitutes your variables with realistic values, minifies the JSON exactly the way AWS does, and tells you how close you are to the limits - right inside VSCode, before you deploy anything. It works on both `.tftpl` template files and plain `.json` IAM policy files.
+**This extension fixes that.** It substitutes your variables with realistic values, minifies the JSON exactly the way AWS does, and tells you how close you are to the limits - right inside VSCode, before you deploy anything.
 
 It also catches two common policy mistakes that waste characters and introduce security risk: **duplicate actions** and **wildcard permissions**.
 
@@ -56,15 +56,15 @@ These limits apply to the **minified JSON** - the version with all spaces and ne
 ### Step 1 - Install
 
 **Option A: From VSIX file**
-1. Download `terraform-iam-policy-checker-1.1.0.vsix` from the [Releases page](https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker/releases)
+1. Download the latest `.vsix` file from the [Releases page](https://github.com/KARTIKEYA47JAIN/terraform-iam-policy-checker/releases)
 2. Open VSCode
 3. Press `Ctrl+Shift+P` → type `Extensions: Install from VSIX`
 4. Select the downloaded file
 5. Restart VSCode
 
-**Option B: Terminal**  
+**Option B: Terminal (after downloading the .vsix file, run from the folder containing it)**  
 ```bash
-code --install-extension terraform-iam-policy-checker-1.1.0.vsix
+code --install-extension terraform-iam-policy-checker-<version>.vsix
 ```
 
 ### Step 2 - Open your Terraform policy folder
@@ -288,9 +288,6 @@ Not currently - the wildcard flag is always shown when wildcards exist. It is a 
 **Q: The duplicate detection shows character savings but I still need those actions - why?**  
 Duplicate actions in JSON are collapsed by the parser - only the last occurrence is kept. So the duplicates are not actually doing anything. Removing them reduces your character count with no change in effective permissions.
 
-**Q: Can I use this on plain `.json` IAM policy files, not just `.tftpl`?**  
-Yes - the extension works on any valid IAM policy JSON. The `.tftpl` extension is just the default trigger. You can right-click any `.json` file containing an IAM policy and run the check manually via the Command Palette (`IAM Policy: Check Characters`). Variable substitution is skipped automatically since plain JSON files won't have `${...}` patterns.
-
 ---
 
 ## For Developers
@@ -310,8 +307,7 @@ Press `F5` in VSCode to launch the Extension Development Host with the extension
 
 To package as a `.vsix`:
 ```bash
-npm install -g @vscode/vsce
-vsce package --no-dependencies
+npx @vscode/vsce package --no-dependencies --allow-missing-repository
 ```
 
 ### Project Structure
