@@ -8,7 +8,7 @@ Thanks for your interest in contributing. This is a VSCode extension built for D
 
 - Check the [open issues](../../issues) to see if your idea or bug is already being tracked
 - For large changes, open an issue first to discuss the approach before writing code
-- All contributions must pass the existing 47 unit tests and any new tests you add
+- All contributions must pass the existing unit tests and any new tests you add
 
 ---
 
@@ -20,6 +20,8 @@ cd terraform-iam-policy-checker
 npm install
 npm run compile
 ```
+
+> **Note on the vscode mock:** The test suite uses `tsconfig-paths` to resolve the `vscode` module to a local mock at `src/tests/__mocks__/vscode.js`. This is already configured in `tsconfig.json` - no extra setup needed.
 
 Press **F5** in VSCode to launch the Extension Development Host with the extension loaded.
 
@@ -85,7 +87,7 @@ Changes to `resultsPanel.ts`, `codeLensProvider.ts`, `diagnosticsProvider.ts` ar
 2. Make your changes
 3. Run `npm test` - all tests must pass
 4. Run `npm run compile` - no TypeScript errors
-5. Update `CHANGELOG.md` with what you changed under a new `[Unreleased]` section
+5. Update `CHANGELOG.md` under a new version section at the top following the existing format
 6. Open a pull request with a clear description of what changed and why
 
 ---
@@ -107,7 +109,7 @@ These are things that would make this extension genuinely more useful:
 - Support for detecting policy type automatically from Terraform `.tf` files
 - GitHub Actions step that runs the check in CI before `terraform apply`
 - Export the budget report as CSV for team audits
-- Support for checking JSON policy files directly (without `.tftpl` extension)
+- Support for checking plain `.json` IAM policy files directly via right-click (currently only `.tftpl` files activate the right-click menu)
 - Windows path handling improvements
 
 ---
