@@ -49,13 +49,13 @@ jobs:
           body: |
             ## Installation
 
-            1. Download the `.vsix` file below
+            1. Download `terraform-iam-policy-checker-${{ steps.get_version.outputs.VERSION }}.vsix` from the Assets section below
             2. Open VSCode
             3. Press `Ctrl+Shift+P` then type `Extensions: Install from VSIX`
             4. Select the downloaded file
             5. Restart VSCode
 
-            Or via terminal:
+            Or via terminal (after downloading the .vsix file, run from the folder containing it):
 
                 code --install-extension terraform-iam-policy-checker-${{ steps.get_version.outputs.VERSION }}.vsix
 
